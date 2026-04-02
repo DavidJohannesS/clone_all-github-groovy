@@ -1,0 +1,35 @@
+plugins {
+    id 'groovy'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.21'
+    implementation 'org.codehaus.groovy:groovy-json:3.0.21'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:7.6.0.202603022253-r'
+    implementation 'org.eclipse.jgit:org.eclipse.jgit.ssh.apache:7.6.0.202603022253-r'
+}
+
+application {
+    mainClass = 'App'
+}
+
+tasks.withType(Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes(
+            'Main-Class': application.mainClass.get()
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}
